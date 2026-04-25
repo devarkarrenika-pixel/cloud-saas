@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cloud Drive</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+body {
+    background: linear-gradient(135deg,#1e3c72,#2a5298);
+}
+
+nav {
+    background: rgba(255,255,255,0.1);
+}
+
+.upload-card {
+    margin-top: 80px;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+}
+
+@media (max-width:600px){
+    .upload-card {margin-top:40px;}
+}
+
+.btn {width:100%; border-radius:30px;}
+</style>
+</head>
+
+<body>
+
+<nav>
+<div class="nav-wrapper">
+<a href="#" class="brand-logo">☁️ CloudDrive</a>
+<a href="/files" class="right">Files</a>
+</div>
+</nav>
+
+<div class="container center">
+<div class="upload-card">
+
+<h4>Upload File</h4>
+
+<form id="uploadForm">
+<div class="file-field input-field">
+<div class="btn blue">
+<span>Select</span>
+<input type="file" id="fileInput" name="file">
+</div>
+<div class="file-path-wrapper">
+<input class="file-path validate white-text" type="text">
+</div>
+</div>
+
+<button class="btn blue">Upload</button>
+</form>
+
+<div class="progress">
+<div id="progressBar" class="determinate" style="width:0%"></div>
+</div>
+
+<p id="status"></p>
+
+</div>
+</div>
+
+<script>
+document.getElementById("uploadForm").onsubmit = function(e){
+e.preventDefault();
+
+let formData = new FormData();
+formData.append("file", document.getElementById("fileInput").files[0]);
+
+let xhr = new XMLHttpRequest();
+
+xhr.upload.onprogress = function(e){
+let p = (e.loaded/e.total)*100;
+document.getElementById("progressBar").style.width = p+"%";
+document.getElementById("status").innerText = "Uploading "+Math.round(p)+"%";
+};
+
+xhr.onload = ()=> window.location="/files";
+
+xhr.open("POST","/upload");
+xhr.send(formData);
+};
+</script>
+
+</body>
+</html>
